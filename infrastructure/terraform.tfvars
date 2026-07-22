@@ -1,0 +1,6 @@
+aws_region     = "us-east-1"
+environment    = "production"
+github_owner   = "YOUR_GITHUB_USERNAME"
+github_repo    = "YOUR_REPO_NAME"
+github_token   = "YOUR_GITHUB_TOKEN"
+key_pair_name  = "YOUR_KEY_PAIR_NAME"

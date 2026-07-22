@@ -1,0 +1,39 @@
+version: 0.2
+
+env:
+  variables:
+    NODE_ENV: production
+    APP_NAME: aws-cicd-demo
+
+phases:
+  pre_build:
+    commands:
+      - echo Pre-build phase started
+      - node --version
+      - npm --version
+      - npm ci
+  build:
+    commands:
+      - echo Build phase started
+      - npm run build
+      - npm test
+      - echo Build completed on `date`
+  post_build:
+    commands:
+      - echo Post-build phase started
+      - mkdir -p dist
+      - cp -r src/ dist/
+      - cp package.json dist/
+      - cp package-lock.json dist/
+      - cp appspec.yml dist/
+      - cp -r scripts/ dist/
+
+artifacts:
+  files:
+    - '**/*'
+  base-directory: dist
+  discard-paths: no
+
+cache:
+  paths:
+    - 'node_modules/**/*'

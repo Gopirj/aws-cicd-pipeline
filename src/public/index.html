@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AWS CI/CD Pipeline Demo</title>
+    <link rel="stylesheet" href="/styles/main.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>AWS CI/CD Pipeline</h1>
+            <p>Automated Application Deployment</p>
+        </header>
+        
+        <main>
+            <section class="pipeline-status">
+                <h2>Pipeline Status</h2>
+                <div class="status-grid">
+                    <div class="status-card active">
+                        <div class="icon">📥</div>
+                        <h3>Source</h3>
+                        <p>GitHub</p>
+                        <span class="badge success">Active</span>
+                    </div>
+                    <div class="status-card active">
+                        <div class="icon">🔨</div>
+                        <h3>Build</h3>
+                        <p>CodeBuild</p>
+                        <span class="badge success">Active</span>
+                    </div>
+                    <div class="status-card active">
+                        <div class="icon">🚀</div>
+                        <h3>Deploy</h3>
+                        <p>CodeDeploy</p>
+                        <span class="badge success">Active</span>
+                    </div>
+                    <div class="status-card active">
+                        <div class="icon">📊</div>
+                        <h3>Monitor</h3>
+                        <p>CloudWatch</p>
+                        <span class="badge success">Active</span>
+                    </div>
+                </div>
+            </section>
+
+            <section class="architecture">
+                <h2>Architecture Overview</h2>
+                <div class="architecture-diagram">
+                    <pre>
+┌─────────────┐    ┌─────────────┐    ┌─────────────┐    ┌─────────────┐
+│   GitHub    │───▶│ CodePipeline│───▶│  CodeBuild  │───▶│ CodeDeploy  │
+│   (Source)  │    │  (Orchestrate)│   │   (Build)   │    │  (Deploy)   │
+└─────────────┘    └─────────────┘    └─────────────┘    └─────────────┘
+                           │                  │                  │
+                           ▼                  ▼                  ▼
+                    ┌─────────────┐    ┌─────────────┐    ┌─────────────┐
+                    │  CloudWatch │    │  S3 Bucket  │    │  EC2/EBS    │
+                    │  (Monitor)  │    │  (Artifacts)│    │  (Runtime)  │
+                    └─────────────┘    └─────────────┘    └─────────────┘
+                    </pre>
+                </div>
+            </section>
+
+            <section class="metrics">
+                <h2>Live Metrics</h2>
+                <div class="metrics-grid" id="metrics">
+                    <div class="metric-card">
+                        <h4>Total Deployments</h4>
+                        <p class="value" id="deployments">Loading...</p>
+                    </div>
+                    <div class="metric-card">
+                        <h4>Success Rate</h4>
+                        <p class="value" id="successRate">Loading...</p>
+                    </div>
+                    <div class="metric-card">
+                        <h4>Avg Build Time</h4>
+                        <p class="value" id="buildTime">Loading...</p>
+                    </div>
+                    <div class="metric-card">
+                        <h4>Last Deploy</h4>
+                        <p class="value" id="lastDeploy">Loading...</p>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <footer>
+            <p>Built with AWS CodePipeline, CodeBuild, CodeDeploy & CloudWatch</p>
+        </footer>
+    </div>
+
+    <script>
+        async function fetchMetrics() {
+            try {
+                const response = await fetch('/api/metrics');
+                const data = await response.json();
+                document.getElementById('deployments').textContent = data.deployments;
+                document.getElementById('successRate').textContent = data.successRate + '%';
+                document.getElementById('buildTime').textContent = data.avgBuildTime;
+                document.getElementById('lastDeploy').textContent = new Date(data.lastDeployment).toLocaleString();
+            } catch (error) {
+                console.error('Error fetching metrics:', error);
+            }
+        }
+        
+        fetchMetrics();
+        setInterval(fetchMetrics, 30000);
+    </script>
+</body>
+</html>
