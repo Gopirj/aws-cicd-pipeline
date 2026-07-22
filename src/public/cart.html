@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shopping Cart - ShopEasy</title>
+    <link rel="stylesheet" href="/styles/main.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-brand">
+            <a href="/">ShopEasy</a>
+        </div>
+        <div class="nav-links">
+            <a href="/">Home</a>
+            <a href="/products">Products</a>
+            <a href="/cart">Cart (<span id="cart-count">0</span>)</a>
+            <a href="/orders">Orders</a>
+        </div>
+    </nav>
+
+    <main class="container">
+        <h1>Shopping Cart</h1>
+        
+        <div id="cart-content">
+            Loading...
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 ShopEasy - Powered by AWS CI/CD Pipeline</p>
+    </footer>
+
+    <script>
+        async function loadCart() {
+            try {
+                const response = await fetch('/api/cart');
+                const data = await response.json();
+                const container = document.getElementById('cart-content');
+                document.getElementById('cart-count').textContent = data.itemCount || 0;
+
+                if (!data.success || data.cart.length === 0) {
+                    container.innerHTML = `
+                        <div class="empty-cart">
+                            <p>Your cart is empty</p>
+                            <a href="/products" class="btn btn-primary">Continue Shopping</a>
+                        </div>
+                    `;
+                    return;
+                }
+
+                container.innerHTML = `
+                    <div class="cart-items">
+                        ${data.cart.map(item => `
+                            <div class="cart-item">
+                                <div class="item-image">${item.product.image}</div>
+                                <div class="item-details">
+                                    <h3>${item.product.name}</h3>
+                                    <p class="price">$${item.product.price.toFixed(2)}</p>
+                                </div>
+                                <div class="item-quantity">
+                                    <button onclick="updateQuantity(${item.productId}, ${item.quantity - 1})">-</button>
+                                    <span>${item.quantity}</span>
+                                    <button onclick="updateQuantity(${item.productId}, ${item.quantity + 1})">+</button>
+                                </div>
+                                <div class="item-subtotal">
+                                    $${item.subtotal.toFixed(2)}
+                                </div>
+                                <button class="btn-remove" onclick="removeItem(${item.productId})">✕</button>
+                            </div>
+                        `).join('')}
+                    </div>
+                    
+                    <div class="cart-summary">
+                        <div class="summary-row">
+                            <span>Items:</span>
+                            <span>${data.itemCount}</span>
+                        </div>
+                        <div class="summary-row total">
+                            <span>Total:</span>
+                            <span>$${data.total}</span>
+                        </div>
+                        <a href="/checkout" class="btn btn-primary btn-block">Proceed to Checkout</a>
+                        <button onclick="clearCart()" class="btn btn-secondary btn-block">Clear Cart</button>
+                    </div>
+                `;
+            } catch (error) {
+                console.error('Error loading cart:', error);
+            }
+        }
+
+        async function updateQuantity(productId, newQuantity) {
+            try {
+                await fetch(`/api/cart/${productId}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ quantity: newQuantity })
+                });
+                loadCart();
+            } catch (error) {
+                console.error('Error updating quantity:', error);
+            }
+        }
+
+        async function removeItem(productId) {
+            try {
+                await fetch(`/api/cart/${productId}`, { method: 'DELETE' });
+                loadCart();
+            } catch (error) {
+                console.error('Error removing item:', error);
+            }
+        }
+
+        async function clearCart() {
+            if (confirm('Are you sure you want to clear your cart?')) {
+                try {
+                    await fetch('/api/cart', { method: 'DELETE' });
+                    loadCart();
+                } catch (error) {
+                    console.error('Error clearing cart:', error);
+                }
+            }
+        }
+
+        loadCart();
+    </script>
+</body>
+</html>
