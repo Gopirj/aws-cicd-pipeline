@@ -25,14 +25,14 @@ async function loadCart() {
                             <p class="price">$${item.product.price.toFixed(2)}</p>
                         </div>
                         <div class="item-quantity">
-                            <button onclick="updateQuantity(${item.productId}, ${item.quantity - 1})">-</button>
+                            <button class="qty-btn decrease" data-id="${item.productId}" data-qty="${item.quantity - 1}">-</button>
                             <span>${item.quantity}</span>
-                            <button onclick="updateQuantity(${item.productId}, ${item.quantity + 1})">+</button>
+                            <button class="qty-btn increase" data-id="${item.productId}" data-qty="${item.quantity + 1}">+</button>
                         </div>
                         <div class="item-subtotal">
                             $${item.subtotal.toFixed(2)}
                         </div>
-                        <button class="btn-remove" onclick="removeItem(${item.productId})">✕</button>
+                        <button class="btn-remove remove-item" data-id="${item.productId}">✕</button>
                     </div>
                 `).join('')}
             </div>
@@ -47,9 +47,23 @@ async function loadCart() {
                     <span>$${data.total}</span>
                 </div>
                 <a href="/checkout" class="btn btn-primary btn-block">Proceed to Checkout</a>
-                <button onclick="clearCart()" class="btn btn-secondary btn-block">Clear Cart</button>
+                <button id="clear-cart" class="btn btn-secondary btn-block">Clear Cart</button>
             </div>
         `;
+
+        container.querySelectorAll('.qty-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                updateQuantity(parseInt(this.dataset.id), parseInt(this.dataset.qty));
+            });
+        });
+
+        container.querySelectorAll('.remove-item').forEach(btn => {
+            btn.addEventListener('click', function() {
+                removeItem(parseInt(this.dataset.id));
+            });
+        });
+
+        document.getElementById('clear-cart').addEventListener('click', clearCart);
     } catch (error) {
         console.error('Error loading cart:', error);
     }

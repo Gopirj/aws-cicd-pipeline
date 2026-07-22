@@ -10,9 +10,15 @@ async function loadFeaturedProducts() {
                     <div class="product-image">${product.image}</div>
                     <h3>${product.name}</h3>
                     <p class="price">$${product.price.toFixed(2)}</p>
-                    <button onclick="addToCart(${product.id})" class="btn btn-small">Add to Cart</button>
+                    <button class="btn btn-small add-to-cart" data-id="${product.id}">Add to Cart</button>
                 </div>
             `).join('');
+
+            container.querySelectorAll('.add-to-cart').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    addToCart(parseInt(this.dataset.id));
+                });
+            });
         }
     } catch (error) {
         console.error('Error loading products:', error);

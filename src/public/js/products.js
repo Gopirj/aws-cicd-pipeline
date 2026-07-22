@@ -27,9 +27,15 @@ function renderProducts(products) {
             <p class="category">${product.category}</p>
             <p class="price">$${product.price.toFixed(2)}</p>
             <p class="stock">${product.stock} in stock</p>
-            <button onclick="addToCart(${product.id})" class="btn btn-primary">Add to Cart</button>
+            <button class="btn btn-primary add-to-cart" data-id="${product.id}">Add to Cart</button>
         </div>
     `).join('');
+
+    container.querySelectorAll('.add-to-cart').forEach(btn => {
+        btn.addEventListener('click', function() {
+            addToCart(parseInt(this.dataset.id));
+        });
+    });
 }
 
 function filterProducts() {
@@ -74,6 +80,9 @@ async function updateCartCount() {
         console.error('Error updating cart count:', error);
     }
 }
+
+document.getElementById('search').addEventListener('keyup', filterProducts);
+document.getElementById('category').addEventListener('change', filterProducts);
 
 loadProducts();
 updateCartCount();
