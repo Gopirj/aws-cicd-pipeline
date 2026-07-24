@@ -99,6 +99,7 @@ aws-cicd-pipeline/
 │
 ├── package.json                 ← Dependencies and scripts
 ├── package-lock.json            ← Exact dependency versions
+├── .eslintrc.json               ← ESLint configuration
 ├── .env                         ← Environment variables (not committed)
 └── .gitignore                   ← Files Git should ignore
 ```
@@ -202,11 +203,11 @@ Placing an order (`POST /api/orders`) follows the same pattern: validate the req
 
 Every push to `main`/`develop`, and every pull request into `main`, runs `.github/workflows/ci.yml`:
 
-1. Check out the code
-2. Set up Node.js 18
+1. Check out the code (`actions/checkout@v5`)
+2. Set up Node.js 18 (`actions/setup-node@v5`)
 3. `npm ci` — install exact dependency versions
 4. `npm test` — run all 18 tests
-5. `npm run lint` — check code style
+5. `npm run lint` — check code style via `.eslintrc.json`
 
 If any step fails, the commit gets a red ❌ on GitHub and should not be merged or deployed.
 
@@ -426,6 +427,7 @@ terraform apply
 | `stop_server.sh` | `aws/scripts/` | Application shutdown |
 | `validate_service.sh` | `aws/scripts/` | Health check validation |
 | `package.json` | root | Node.js project configuration |
+| `.eslintrc.json` | root | ESLint configuration for code linting |
 
 ---
 
