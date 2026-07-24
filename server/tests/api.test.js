@@ -1,5 +1,5 @@
 const request = require('supertest');
-const app = require('../src/server');
+const app = require('../server');
 
 describe('E-Commerce API Tests', () => {
     // Product Tests
@@ -94,7 +94,7 @@ describe('E-Commerce API Tests', () => {
         test('POST /api/orders should create order', async () => {
             await request(app).delete('/api/cart');
             await request(app).post('/api/cart').send({ productId: 1, quantity: 2 });
-            
+
             const response = await request(app)
                 .post('/api/orders')
                 .send({
@@ -102,7 +102,7 @@ describe('E-Commerce API Tests', () => {
                     email: 'test@example.com',
                     address: '123 Test Street'
                 });
-            
+
             expect(response.status).toBe(200);
             expect(response.body.success).toBe(true);
             expect(response.body.order).toHaveProperty('id');
@@ -125,11 +125,11 @@ describe('E-Commerce API Tests', () => {
         test('POST /api/orders should fail with missing fields', async () => {
             await request(app).delete('/api/cart');
             await request(app).post('/api/cart').send({ productId: 1, quantity: 1 });
-            
+
             const response = await request(app)
                 .post('/api/orders')
                 .send({ customerName: 'Test User' });
-            
+
             expect(response.status).toBe(400);
         });
 

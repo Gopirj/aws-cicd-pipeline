@@ -10,12 +10,12 @@ export PORT=3000
 
 if command -v pm2 &> /dev/null; then
     echo "Using PM2 to start application..."
-    pm2 start src/server.js --name "aws-cicd-app" -i max
+    pm2 start server/server.js --name "aws-cicd-app" -i max
     pm2 save
     pm2 startup
 else
     echo "PM2 not found, starting with nohup..."
-    nohup node src/server.js > /var/log/app/app.log 2>&1 &
+    nohup node server/server.js > /var/log/app/app.log 2>&1 &
     echo $! > /var/run/app.pid
 fi
 

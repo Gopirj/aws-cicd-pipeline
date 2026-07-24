@@ -2,12 +2,12 @@
   "name": "aws-cicd-pipeline",
   "version": "1.0.0",
   "description": "CI/CD Pipeline for Automated Application Deployment on AWS",
-  "main": "src/server.js",
+  "main": "server/server.js",
   "scripts": {
-    "start": "node src/server.js",
-    "dev": "nodemon src/server.js",
-    "test": "jest --coverage",
-    "lint": "eslint src/",
+    "start": "node server/server.js",
+    "dev": "nodemon server/server.js",
+    "test": "jest --coverage --roots server/tests",
+    "lint": "eslint server/",
     "build": "npm install --production"
   },
   "dependencies": {

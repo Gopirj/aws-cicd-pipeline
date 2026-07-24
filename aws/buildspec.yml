@@ -22,11 +22,12 @@ phases:
     commands:
       - echo Post-build phase started
       - mkdir -p dist
-      - cp -r src/ dist/
+      - cp -r server/ dist/
+      - cp -r website/ dist/
       - cp package.json dist/
       - cp package-lock.json dist/
-      - cp appspec.yml dist/
-      - cp -r scripts/ dist/
+      - cp aws/appspec.yml dist/
+      - cp -r aws/scripts/ dist/
 
 artifacts:
   files:
